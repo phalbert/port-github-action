@@ -13,6 +13,11 @@ export type SearchBody = {
 	not?: boolean;
 };
 
+export type EntitiesSearchInput = {
+	searchBody: SearchBody;
+	exclude?: string[];
+};
+
 export type Entity = {
 	identifier: string;
 	title?: string;
@@ -113,4 +118,5 @@ export type ActionInput = {
 	externalRunId?: string;
 	action?: string;
 	delete_dependents?: string;
+	exclude?: string[];
 };

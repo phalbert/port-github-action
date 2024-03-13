@@ -19,6 +19,9 @@ inputs:
   query:
     required: false
     description: 'Query to be used for SEARCH operation'
+  exclude:
+    required: false
+    description: 'Exclude fields from the search entities array response'
   identifier:
     required: false
     description: 'The identifier of the entity'
