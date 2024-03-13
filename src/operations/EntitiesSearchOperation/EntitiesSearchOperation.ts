@@ -3,6 +3,7 @@ import assert from 'assert';
 import clients from '../../clients';
 import { IOperation } from '../../interfaces';
 import { ActionInput, EntitiesSearchInput, Entity } from '../../types';
+import * as core from '@actions/core';
 
 export default class EntitiesSearchOperation implements IOperation {
 	constructor(private input: ActionInput) {
@@ -14,7 +15,7 @@ export default class EntitiesSearchOperation implements IOperation {
 
 		const searchBodySchema = this.input.query?.length ? JSON.parse(this.input.query.join('')) : {};
 
-		console.log('excludeProperties', this.input.excludeProperties);
+		core.info(`excludeProperties ${this.input.excludeProperties}`);
 
 		return {
 			searchBody: searchBodySchema,
@@ -29,7 +30,8 @@ export default class EntitiesSearchOperation implements IOperation {
 		const entities: Entity[] = await clients.port.searchEntities(this.input.baseUrl, accessToken, searchBody);
         
 
-		if (excludeProperties) {
+		if (excludeProperties?.length) {
+
 			entities.forEach((entity) => {
 				Object.keys(entity.properties).forEach((key) => {
 					if (excludeProperties.includes(key)) {
@@ -38,7 +40,9 @@ export default class EntitiesSearchOperation implements IOperation {
 				});
 			});
 		}
-
+        
+		core.info(`EntitiesSearchOperation - Found ${entities.length} entities`);
+		
 		return { entities };
 	};
 }
