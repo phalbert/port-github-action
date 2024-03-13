@@ -16,20 +16,24 @@ export default class EntitiesSearchOperation implements IOperation {
 
 		return {
 			searchBody: searchBodySchema,
-			exclude: this.input.exclude,
+			excludeProperties: this.input.exclude,
 		};
 	};
 
 	execute = async (): Promise<Record<string, any>> => {
-		const { searchBody, exclude } = this.parseInput();
+		const { searchBody, excludeProperties } = this.parseInput();
 		const accessToken = await clients.port.getToken(this.input.baseUrl, this.input.clientId, this.input.clientSecret);
 
 		const entities: Entity[] = await clients.port.searchEntities(this.input.baseUrl, accessToken, searchBody);
 
-		// if exclude is provided, filter out the entities
-		if (exclude) {
-			const filteredEntities = entities.filter((entity) => !exclude.includes(entity.identifier));
-			return { entities: filteredEntities };
+		if (excludeProperties) {
+			entities.forEach((entity) => {
+				Object.keys(entity.properties).forEach((key) => {
+					if (excludeProperties.includes(key)) {
+						delete entity.properties[key];
+					}
+				});
+			});
 		}
 
 		return { entities };

@@ -15,7 +15,7 @@ export type SearchBody = {
 
 export type EntitiesSearchInput = {
 	searchBody: SearchBody;
-	exclude?: string[];
+	excludeProperties?: string[];
 };
 
 export type Entity = {
