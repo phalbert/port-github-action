@@ -14,9 +14,11 @@ export default class EntitiesSearchOperation implements IOperation {
 
 		const searchBodySchema = this.input.query?.length ? JSON.parse(this.input.query.join('')) : {};
 
+		console.log('excludeProperties', this.input.excludeProperties);
+
 		return {
 			searchBody: searchBodySchema,
-			excludeProperties: this.input.exclude,
+			excludeProperties: this.input.excludeProperties,
 		};
 	};
 
@@ -25,6 +27,7 @@ export default class EntitiesSearchOperation implements IOperation {
 		const accessToken = await clients.port.getToken(this.input.baseUrl, this.input.clientId, this.input.clientSecret);
 
 		const entities: Entity[] = await clients.port.searchEntities(this.input.baseUrl, accessToken, searchBody);
+        
 
 		if (excludeProperties) {
 			entities.forEach((entity) => {
